@@ -79,8 +79,7 @@ docker-compose up -d
 
 ### 🪟 Windows
 
-1. Cài Docker Desktop:
-   https://www.docker.com/products/docker-desktop/
+1. Cài Docker Desktop
 
 2. Bật WSL2 (bắt buộc)
 
@@ -96,8 +95,7 @@ docker-compose up -d
 
 ### 🍎 macOS
 
-1. Cài Docker Desktop:
-   https://www.docker.com/products/docker-desktop/
+1. Cài Docker Desktop
 
 2. Mở Docker Desktop
 
@@ -124,7 +122,7 @@ docker-compose up -d
 
 ## 🧪 Sử dụng Dashboard
 
-### ➤ Thêm User
+### Thêm User
 
 * Nhập username + password
 * Nhấn **Add**
@@ -132,7 +130,7 @@ docker-compose up -d
 
 ---
 
-### ➤ Xem danh sách user
+### Xem danh sách user
 
 * Nhấn **Load**
 * Hiển thị danh sách từ database
