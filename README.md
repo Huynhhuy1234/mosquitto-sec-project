@@ -67,18 +67,9 @@ mosquitto-sec-project/
 
 ---
 
-## 🚀 Cách chạy hệ thống
+## 🖥️ Hướng dẫn chạy trên các hệ điều hành
 
-### 1. Clone project
-
-```bash
-git clone <repo>
-cd mosquitto-sec-project
-```
-
----
-
-### 2. Khởi động hệ thống
+### 🐧 Linux (Kali / Ubuntu)
 
 ```bash
 docker-compose up -d
@@ -86,13 +77,42 @@ docker-compose up -d
 
 ---
 
-### 3. Kiểm tra container
+### 🪟 Windows
+
+1. Cài Docker Desktop:
+   https://www.docker.com/products/docker-desktop/
+
+2. Bật WSL2 (bắt buộc)
+
+3. Mở PowerShell hoặc WSL
+
+4. Chạy lệnh:
 
 ```bash
-docker ps
+docker-compose up -d
 ```
 
 ---
+
+### 🍎 macOS
+
+1. Cài Docker Desktop:
+   https://www.docker.com/products/docker-desktop/
+
+2. Mở Docker Desktop
+
+3. Mở Terminal
+
+4. Chạy lệnh:
+
+```bash
+docker-compose up -d
+```
+
+---
+
+⚠️ Lưu ý: Cần mở Docker Desktop trước khi chạy lệnh.
+
 
 ## 🌐 Truy cập
 
