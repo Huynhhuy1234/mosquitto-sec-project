@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MQTT Dashboard</title>
+</head>
+<body>
+
+<h2>Add User</h2>
+<input id="u" placeholder="username">
+<input id="p" placeholder="password">
+<button onclick="addUser()">Add</button>
+
+<h2>Users</h2>
+<button onclick="loadUsers()">Load</button>
+<ul id="list"></ul>
+
+<script>
+async function addUser() {
+  await fetch("http://localhost:3000/add-user", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      username: u.value,
+      password: p.value
+    })
+  });
+  alert("Added!");
+}
+
+async function loadUsers() {
+  const res = await fetch("http://localhost:3000/users");
+  const data = await res.json();
+
+  list.innerHTML = "";
+  data.forEach(u => {
+    list.innerHTML += `<li>${u.username}</li>`;
+  });
+}
+</script>
+
+</body>
+</html>

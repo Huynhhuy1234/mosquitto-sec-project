@@ -1,0 +1,59 @@
+services:
+  mysql_db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mqtt_db
+    volumes:
+      - ./broker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mqtt_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mosquitto_broker:
+    image: iegomez/mosquitto-go-auth:latest
+    container_name: mosquitto_broker
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./broker/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    command: sh -c "sleep 30 && /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf"
+    networks:
+      - mqtt_net
+
+  backend:
+    image: node:18
+    container_name: backend
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    command: sh -c "npm install && node app.js"
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+    networks:
+      - mqtt_net
+
+  frontend:
+    image: nginx:alpine
+    container_name: frontend
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    ports:
+      - "8080:80"
+    networks:
+      - mqtt_net
+
+
+networks:
+  mqtt_net:
