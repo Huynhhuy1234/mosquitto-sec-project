@@ -2,19 +2,54 @@
 <html>
 <head>
   <title>MQTT Dashboard</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 20px;
+    }
+    input {
+      margin: 5px;
+      padding: 5px;
+    }
+    button {
+      padding: 6px 10px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    .card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
 
+<h1>MQTT Dashboard</h1>
+
+<!-- ADD USER -->
 <h2>Add User</h2>
 <input id="u" placeholder="username">
-<input id="p" placeholder="password">
-<button onclick="addUser()">Add</button>
+<input id="p" type="password" placeholder="password">
+<button onclick="addUser()">Add User</button>
 
-<h2>Users</h2>
-<button onclick="loadUsers()">Load</button>
-<ul id="list"></ul>
+<!-- ADD DEVICE -->
+<h2>Add Device</h2>
+<input id="du" placeholder="username">
+<input id="did" placeholder="device_id">
+<button onclick="addDevice()">Add Device</button>
+
+<!-- LOAD DATA -->
+<h2>System Data</h2>
+<button onclick="loadData()">Load Data</button>
+
+<div id="list"></div>
 
 <script>
+// =====================
+// ADD USER
+// =====================
 async function addUser() {
   await fetch("http://localhost:3000/add-user", {
     method: "POST",
@@ -24,17 +59,60 @@ async function addUser() {
       password: p.value
     })
   });
-  alert("Added!");
+
+  alert("User added!");
 }
 
-async function loadUsers() {
-  const res = await fetch("http://localhost:3000/users");
+// =====================
+// ADD DEVICE
+// =====================
+async function addDevice() {
+  await fetch("http://localhost:3000/add-device", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      username: du.value,
+      device_id: did.value
+    })
+  });
+
+  alert("Device added!");
+}
+
+// =====================
+// LOAD FULL DATA
+// =====================
+async function loadData() {
+  const res = await fetch("http://localhost:3000/full-data");
   const data = await res.json();
 
   list.innerHTML = "";
-  data.forEach(u => {
-    list.innerHTML += `<li>${u.username}</li>`;
+
+  if (data.length === 0) {
+    list.innerHTML = "<p>No data</p>";
+    return;
+  }
+
+  data.forEach(item => {
+    list.innerHTML += `
+      <div class="card">
+        <b>User:</b> ${item.username} <br>
+        <b>Device:</b> ${item.device_id || "None"} <br>
+        <b>Topic:</b> ${item.topic || "None"} <br>
+        <b>Permission:</b> ${formatRW(item.rw)}
+      </div>
+    `;
   });
+}
+
+// =====================
+// FORMAT RW
+// =====================
+function formatRW(rw) {
+  if (rw === 1) return "Subscribe";
+  if (rw === 2) return "Publish";
+  if (rw === 3) return "Pub + Sub";
+  return "None";
 }
 </script>
 
