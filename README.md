@@ -50,7 +50,6 @@ mosquitto-sec-project/
 ├── frontend/
 │   └── index.html
 ├── proxy/
-│   └── nginx.conf
 ├── docker-compose.yml
 └── README.md
 ```
@@ -124,10 +123,17 @@ docker-compose up -d
 
 ### Thêm User
 
-* Nhập username + password
+* Nhập username + password (mới mật khẩu được mã hóa tại https://www.browserling.com/tools/bcrypt)
 * Nhấn **Add**
 * User được lưu vào MySQL
-
+---
+### Thêm device
+* nhập username đã tạo
+* nhập device_id
+* bấm Add Device
+backend sẽ tự:
+* thêm device
+* tạo ACL luôn
 ---
 
 ### Xem danh sách user
@@ -139,17 +145,20 @@ docker-compose up -d
 
 ## 📡 Test MQTT
 
-Dùng MQTT client:
+Bước 1: mở 1 terminal SUBSCRIBE
+
+```bash
+mosquitto_sub -h localhost -p 1883 -u <username> -P <password> -t test/topic
+```
+
+Bước 2: mở 1 terminal SUBSCRIBE
 
 ```bash
 mosquitto_pub -h localhost -p 1883 -u <username> -P <password> -t test/topic -m "hello"
 ```
-
-👉 Nếu có ACL đúng → publish thành công
-
 ---
 
-## 🔥 Demo điểm mạnh (quan trọng)
+## Điểm mạnh
 
 Hệ thống hỗ trợ:
 
@@ -158,10 +167,6 @@ Hệ thống hỗ trợ:
 * Thêm user / ACL từ dashboard
 * Không cần restart Mosquitto
 * Áp dụng gần như realtime
-
-📢 Câu demo:
-
-> “Hệ thống cho phép quản lý truy cập động thông qua database, giúp mở rộng dễ dàng và cập nhật ngay lập tức mà không cần restart broker.”
 
 ---
 
