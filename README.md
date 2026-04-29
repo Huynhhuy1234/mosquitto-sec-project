@@ -151,7 +151,7 @@ Bước 1: mở 1 terminal SUBSCRIBE
 mosquitto_sub -h localhost -p 1883 -u <username> -P <password> -t test/topic
 ```
 
-Bước 2: mở 1 terminal SUBSCRIBE
+Bước 2: ở terminal khác PUBLISH
 
 ```bash
 mosquitto_pub -h localhost -p 1883 -u <username> -P <password> -t test/topic -m "hello"
