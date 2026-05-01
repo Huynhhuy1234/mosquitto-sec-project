@@ -1,64 +1,35 @@
--- =========================
--- 1. TẠO DATABASE (an toàn)
--- =========================
 CREATE DATABASE IF NOT EXISTS mqtt_db;
 USE mqtt_db;
 
--- =========================
--- 2. XÓA BẢNG CŨ (nếu muốn reset)
--- =========================
--- COMMENT lại nếu bạn KHÔNG muốn mất dữ liệu
-DROP TABLE IF EXISTS acl;
-DROP TABLE IF EXISTS devices;
-DROP TABLE IF EXISTS users;
-
--- =========================
--- 3. TẠO BẢNG USERS
--- =========================
+-- Bảng users
 CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL
+    id MEDIUMINT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(200) NOT NULL,
+    is_admin BOOLEAN NOT NULL,
+    PRIMARY KEY(id)
 );
 
--- =========================
--- 4. TẠO BẢNG DEVICES
--- =========================
-CREATE TABLE IF NOT EXISTS devices (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    device_id VARCHAR(100) NOT NULL UNIQUE,
-    owner_id INT,
-    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+-- Bảng acls
+CREATE TABLE IF NOT EXISTS acls (
+    id MEDIUMINT NOT NULL AUTO_INCREMENT,
+    test_user_id MEDIUMINT NOT NULL,
+    topic VARCHAR(200) NOT NULL,
+    rw INT NOT NULL,
+    PRIMARY KEY(id),
+    -- Sửa từ test_user thành users ở đây
+    FOREIGN KEY (test_user_id) REFERENCES users(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
--- =========================
--- 5. TẠO BẢNG ACL
--- =========================
-CREATE TABLE IF NOT EXISTS acl (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100),
-    topic VARCHAR(255),
-    rw INT
-);
+-- Thêm dữ liệu (Liệt kê rõ cột để tránh lỗi)
+INSERT INTO users (username, password_hash, is_admin) VALUES 
+("admin", "$2a$10$9yAYWBm2kuW9Z/oz19ldEuLZSwn6G.bFwYJGpBFdp/lCIYz0.7foO", 1),
+("user1", "$2a$10$ITDnpmHaEc3.mBDyDd9wMOtN2xZjkIlahQf0.j0m24VNEBqMwNkau", 0);
 
--- =========================
--- 6. INSERT DATA TEST
--- =========================
-
--- User mẫu
-INSERT INTO users (username, password_hash)
-VALUES 
-('huy_bk', '$2a$10$N0HcjJ0d22WBnMCtXoTtaeEDehUSrkCGSXixL2SKlQ0nxj2dWL5iC');
-
--- Device mẫu
-INSERT INTO devices (device_id, owner_id)
-VALUES 
-('device_01', 1),
-('device_02', 1);
-
--- ACL mẫu
-INSERT INTO acl (username, topic, rw)
-VALUES 
-('huy_bk', 'sensor/device_01', 3),
-('huy_bk', 'sensor/device_01/data', 3),
-('huy_bk', 'sensor/device_02', 1); -- chỉ subscribe
+-- Thêm ACL cho user1 (id=2)
+INSERT INTO acls (test_user_id, topic, rw) VALUES 
+(2, "read_topic", 1),
+(2, "write_topic", 2),
+(2, "read_write_topic", 3);
